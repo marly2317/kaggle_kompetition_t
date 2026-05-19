@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 010_iterations_150
+  parent: 001_best_solution
+  purpose: check CatBoost iterations 150
+  hypothesis: lower iteration cap can reduce overfitting while keeping more signal than 50 or 100.
+
+model:
+  params:
+    iterations: 150

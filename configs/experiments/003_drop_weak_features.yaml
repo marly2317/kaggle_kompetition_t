@@ -1,0 +1,11 @@
+﻿experiment:
+  name: 003_drop_weak_features
+  parent: 001_best_solution
+  purpose: убрать слабые признаки
+  hypothesis: признаки с низкой и нестабильной важностью могут добавлять шум и ухудшать обобщение.
+
+features:
+  drop:
+    - IsAlone
+    - Parch
+    - HasCabin

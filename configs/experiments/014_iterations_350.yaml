@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 014_iterations_350
+  parent: 001_best_solution
+  purpose: check CatBoost iterations 350
+  hypothesis: iteration cap 350 can preserve most validation gains with less overfitting than the previous main setup.
+
+model:
+  params:
+    iterations: 350

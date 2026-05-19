@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 012_iterations_250
+  parent: 001_best_solution
+  purpose: check CatBoost iterations 250
+  hypothesis: iteration cap 250 can balance validation quality and simpler training.
+
+model:
+  params:
+    iterations: 250

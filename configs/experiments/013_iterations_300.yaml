@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 013_iterations_300
+  parent: 001_best_solution
+  purpose: check CatBoost iterations 300
+  hypothesis: iteration cap 300 can keep most useful training while limiting overfitting.
+
+model:
+  params:
+    iterations: 300

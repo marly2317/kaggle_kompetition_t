@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 016_iterations_450
+  parent: 001_best_solution
+  purpose: check CatBoost iterations 450
+  hypothesis: iteration cap 450 can approach early-stopping quality with less training.
+
+model:
+  params:
+    iterations: 450

@@ -1,0 +1,9 @@
+experiment:
+  name: 028_catboost_regularized_l2_15
+  parent: 024_catboost_regularized
+  purpose: check slightly weaker L2 regularization than the current best setup
+  hypothesis: L2 between 10 and 20 can keep enough flexibility while preserving Kaggle generalization.
+
+model:
+  params:
+    l2_leaf_reg: 15

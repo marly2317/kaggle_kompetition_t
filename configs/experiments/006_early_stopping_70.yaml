@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 006_early_stopping_70
+  parent: 001_best_solution
+  purpose: check early_stopping_rounds 70
+  hypothesis: early stopping at 70 rounds can remove extra waiting after the best validation point without hurting validation quality.
+
+model:
+  fit_params:
+    early_stopping_rounds: 70

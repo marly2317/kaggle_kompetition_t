@@ -1,0 +1,9 @@
+experiment:
+  name: 031_catboost_regularized_random_strength_8
+  parent: 025_catboost_regularized_l2_20
+  purpose: check stronger CatBoost randomness around the current best setup
+  hypothesis: A bit more split randomness can reduce sensitivity to small folds.
+
+model:
+  params:
+    random_strength: 8

@@ -1,0 +1,12 @@
+﻿experiment:
+  name: 023_optuna_repeated_cv
+  parent: 001_best_solution
+  purpose: optuna repeated cv tuning with stability penalty
+model:
+  params:
+    learning_rate: 0.09396373233435971
+    depth: 4
+    l2_leaf_reg: 1.9416695020206662
+    random_strength: 0.038125296140473164
+    bagging_temperature: 0.756565603145862
+    border_count: 32

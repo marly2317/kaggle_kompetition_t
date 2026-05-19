@@ -1,0 +1,9 @@
+experiment:
+  name: 030_catboost_regularized_l2_30
+  parent: 024_catboost_regularized
+  purpose: check stronger L2 regularization around the current best setup
+  hypothesis: More L2 regularization can improve test transfer if the current model still overfits.
+
+model:
+  params:
+    l2_leaf_reg: 30

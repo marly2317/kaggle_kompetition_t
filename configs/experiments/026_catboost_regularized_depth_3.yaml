@@ -1,0 +1,9 @@
+experiment:
+  name: 026_catboost_regularized_depth_3
+  parent: 024_catboost_regularized
+  purpose: smaller tree depth around the current best regularized setup
+  hypothesis: Shallower trees can reduce memorization on the small Titanic dataset.
+
+model:
+  params:
+    depth: 3

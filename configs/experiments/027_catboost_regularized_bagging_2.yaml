@@ -1,0 +1,9 @@
+experiment:
+  name: 027_catboost_regularized_bagging_2
+  parent: 024_catboost_regularized
+  purpose: stronger Bayesian bagging around the current best regularized setup
+  hypothesis: More sampling noise can make the model less sensitive to small train folds.
+
+model:
+  params:
+    bagging_temperature: 2

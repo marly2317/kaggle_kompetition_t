@@ -1,0 +1,7 @@
+﻿experiment:
+  name: 021_learning_rate_005
+  parent: 001_best_solution
+
+model:
+  params:
+    learning_rate: 0.05

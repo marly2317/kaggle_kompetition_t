@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 009_iterations_100
+  parent: 001_best_solution
+  purpose: check CatBoost iterations 100
+  hypothesis: low iteration cap can reduce overfitting, but may underfit late-improving folds.
+
+model:
+  params:
+    iterations: 100

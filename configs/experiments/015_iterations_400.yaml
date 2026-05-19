@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 015_iterations_400
+  parent: 001_best_solution
+  purpose: check CatBoost iterations 400
+  hypothesis: iteration cap 400 can reduce overfitting while preserving most validation gains.
+
+model:
+  params:
+    iterations: 400

@@ -1,0 +1,14 @@
+﻿experiment:
+  name: 005_catboost_tuned
+  parent: 001_best_solution
+  purpose: проверить точные параметры CatBoost из подбора
+  hypothesis: полные значения лучших параметров из `optuna.json` могут дать небольшой выигрыш относительно округлённых значений в `001_best_solution`.
+
+model:
+  params:
+    learning_rate: 0.03143364840330303
+    depth: 5
+    l2_leaf_reg: 1.383324997521996
+    random_strength: 2.406590942262119
+    bagging_temperature: 0.07455064367977082
+    border_count: 32

@@ -1,0 +1,9 @@
+experiment:
+  name: 029_catboost_regularized_l2_25
+  parent: 024_catboost_regularized
+  purpose: check slightly stronger L2 regularization than the current best setup
+  hypothesis: L2 above 20 can reduce overfitting further without losing too much signal.
+
+model:
+  params:
+    l2_leaf_reg: 25

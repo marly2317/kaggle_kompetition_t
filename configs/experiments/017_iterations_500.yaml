@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 017_iterations_500
+  parent: 001_best_solution
+  purpose: check CatBoost iterations 500
+  hypothesis: iteration cap 500 can keep quality while shortening training compared with the previous main setup.
+
+model:
+  params:
+    iterations: 500

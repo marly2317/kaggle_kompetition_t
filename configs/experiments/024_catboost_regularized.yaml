@@ -1,0 +1,12 @@
+﻿experiment:
+  name: 024_catboost_regularized
+  parent: 001_best_solution
+  purpose: stronger CatBoost regularization with the same feature set
+  hypothesis: Stronger regularization can reduce overfitting and improve Kaggle generalization even if local CV does not increase.
+
+model:
+  params:
+    depth: 4
+    l2_leaf_reg: 10
+    random_strength: 5
+    bagging_temperature: 1

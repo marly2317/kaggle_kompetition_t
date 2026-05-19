@@ -1,0 +1,9 @@
+experiment:
+  name: 025_catboost_regularized_l2_20
+  parent: 024_catboost_regularized
+  purpose: stronger l2 regularization around the current best regularized setup
+  hypothesis: A larger L2 penalty can reduce fold overfitting and improve Kaggle generalization.
+
+model:
+  params:
+    l2_leaf_reg: 20

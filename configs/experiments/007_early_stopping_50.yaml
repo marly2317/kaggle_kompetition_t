@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 007_early_stopping_50
+  parent: 001_best_solution
+  purpose: check early_stopping_rounds 50
+  hypothesis: early stopping at 50 rounds can reduce extra training after the best validation point, but may stop too early on folds with delayed improvements.
+
+model:
+  fit_params:
+    early_stopping_rounds: 50

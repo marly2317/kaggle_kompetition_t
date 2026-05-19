@@ -1,0 +1,9 @@
+﻿experiment:
+  name: 008_iterations_050
+  parent: 001_best_solution
+  purpose: check CatBoost iterations 50
+  hypothesis: very low iteration cap can reduce overfitting, but may underfit.
+
+model:
+  params:
+    iterations: 50

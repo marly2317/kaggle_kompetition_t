@@ -1,0 +1,12 @@
+﻿experiment:
+  name: 018_drop_raw_family_features
+  parent: 001_best_solution
+  purpose: drop raw duplicated family features
+  hypothesis: Parch, SibSp, FamilySize, and IsAlone duplicate FamilySizeGroup and FamilySurvivalRate, so removing them can reduce noise without losing the family signal.
+
+features:
+  drop:
+    - Parch
+    - SibSp
+    - FamilySize
+    - IsAlone
