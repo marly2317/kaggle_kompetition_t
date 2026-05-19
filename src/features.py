@@ -117,12 +117,10 @@ def _family_survival(df, artifacts, target, smoothing):
     counts = df["Ticket"].map(artifacts["family_count"]).fillna(0).astype(float)
 
     if target is not None:
-        # Leave-one-out: exclude this passenger from their own family stats
         sums = sums - target.to_numpy()
         counts = counts - 1
 
-    # Bayesian smoothing: pull rate toward prior for small groups
-    # so train (LOO) and valid (lookup) distributions match better
+    
     prior = artifacts["family_prior"]
     return (sums + smoothing * prior) / (counts + smoothing)
 

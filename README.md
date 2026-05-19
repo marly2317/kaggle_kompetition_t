@@ -43,5 +43,5 @@ python -m src.main all
 
 ## Ноутбуки
 
-- `notebooks/01_eda.ipynb` — EDA L
+- `notebooks/01_eda.ipynb` — EDA 
 - `notebooks/03_training_analysis.ipynb` — пост-тренировочный анализ: learning curves, OOF metrics, permutation, SHAP, feature selection candidates

@@ -1,0 +1,29 @@
+---
+description: Titanic Kaggle pipeline conventions for Python and configs
+globs: src/**/*.py,configs/**/*.yaml,tests/**/*.py
+alwaysApply: false
+---
+
+# Titanic ML pipeline
+
+## Data leakage
+
+- Fit preprocessing in `fit_preprocessing_artifacts` on **train fold only**.
+- Apply the same artifacts to valid/test via `apply_preprocessing_artifacts`.
+- `FamilySurvivalRate` and imputation stats must not use valid labels.
+
+## Experiments
+
+- Add or change behavior via `configs/experiments/<name>.yaml`, not hardcoded constants.
+- Load with `load_experiment_config_by_name`; respect optional `experiment.parent` merge.
+
+## Features
+
+- Check `docs/notes.md` before re-adding rejected ideas (global ticket freq on train+test, raw deck, etc.).
+- Prefer grouped features (`Deck`, `Title`, `TicketFrequency`) over raw high-cardinality columns.
+
+## Style
+
+- Keep functions in existing modules (`features`, `train_functions`, `metrics`).
+- Use `LOGGER` in CLI/train code, not bare `print`.
+- Run `python -m pytest tests/ -q` after pipeline changes.
