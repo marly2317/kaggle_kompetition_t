@@ -15,6 +15,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def fit(experiment=DEFAULT_EXPERIMENT):
+    """Run cross-validated training for an experiment and log its metrics."""
     config = load_experiment_config_by_name(PROJECT_ROOT, experiment)
     LOGGER.info("[fit] experiment=%s", config["experiment"]["name"])
     metrics = run(config, PROJECT_ROOT)
@@ -23,6 +24,7 @@ def fit(experiment=DEFAULT_EXPERIMENT):
 
 
 def submit(experiment=DEFAULT_EXPERIMENT):
+    """Build the Kaggle submission CSV from the trained fold models."""
     config = load_experiment_config_by_name(PROJECT_ROOT, experiment)
     path = create_submission(config, PROJECT_ROOT)
     LOGGER.info("[submit] saved to %s", path)
@@ -30,6 +32,7 @@ def submit(experiment=DEFAULT_EXPERIMENT):
 
 
 def _print_metrics(metrics):
+    """Log fold scores, means and threshold metrics from a run() result."""
     for fold, score in enumerate(metrics.get("fold_scores", []), start=1):
         LOGGER.info("  fold %s: %.5f", fold, score)
     for fold, values in enumerate(metrics.get("fold_metrics", []), start=1):
@@ -66,12 +69,20 @@ def _print_metrics(metrics):
 
 
 def main():
+    """CLI entry point: dispatch the fit / submit / all / tune subcommands."""
     setup_logging()
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--experiment", default=DEFAULT_EXPERIMENT)
+
     parser = argparse.ArgumentParser(prog="titanic")
-    parser.add_argument("command", choices=["fit", "submit", "all", "tune"])
-    parser.add_argument("--experiment", default=DEFAULT_EXPERIMENT)
-    parser.add_argument("--n-trials", type=int, default=30)
-    parser.add_argument("--timeout", type=int, default=900)
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("fit", parents=[common])
+    sub.add_parser("submit", parents=[common])
+    sub.add_parser("all", parents=[common])
+    tune_p = sub.add_parser("tune", parents=[common])
+    tune_p.add_argument("--n-trials", type=int, default=30)
+    tune_p.add_argument("--timeout", type=int, default=900)
+
     args = parser.parse_args()
 
     if args.command in ("fit", "all"):

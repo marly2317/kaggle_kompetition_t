@@ -3,6 +3,16 @@ description: Behavioral guidelines to reduce common LLM coding mistakes. Use whe
 alwaysApply: true
 ---
 
+<!--
+Karpathy behavioral guidelines. Keep this section identical across:
+  - CLAUDE.md
+  - .cursor/rules/karpathy-guidelines.mdc
+  - .github/copilot-instructions.md
+  - skills/karpathy-guidelines/SKILL.md
+Source: https://github.com/multica-ai/andrej-karpathy-skills
+When updating principles, update all four files together. EXAMPLES.md has the worked examples.
+-->
+
 # Karpathy behavioral guidelines
 
 Behavioral guidelines to reduce common LLM coding mistakes. From [andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills). Merge with project-specific instructions as needed.
@@ -67,6 +77,6 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ---
 
-**This repository also:** `AGENTS.md`, `.cursor/rules/titanic-ml-pipeline.mdc`, `docs/agent-guidelines/EXAMPLES.md`.
+**This repository also:** `.cursor/rules/titanic-ml-pipeline.mdc`, `EXAMPLES.md`.
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.

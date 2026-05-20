@@ -23,6 +23,7 @@ FEATURES = [
 
 
 def get_features(config):
+    """Return the model feature list, minus any features.drop from the config."""
     drop = set(_feature_settings(config).get("drop", []))
     unknown = sorted(drop - set(FEATURES))
     if unknown:
@@ -31,15 +32,14 @@ def get_features(config):
 
 
 def get_categorical_features(config):
+    """Return the categorical subset of the selected features."""
     selected = set(get_features(config))
     return [feature for feature in CATEGORICAL if feature in selected]
 
 
-def get_family_smoothing(config):
-    return float(_feature_settings(config).get("family_smoothing", 10.0))
-
-
 def build_base_features(df, config):
+    """Derive label-independent features (Title, Surname, Deck, FamilySize, ...)
+    from the raw columns. No fitting — safe to call on any split."""
     check_columns(df, SOURCE_COLUMNS, "features_source")
     out = df[SOURCE_COLUMNS].copy()
 
@@ -84,7 +84,7 @@ def apply_preprocessing_artifacts(df, artifacts, config, target=None):
     labels were used to fit `artifacts` — then leave-one-out is applied to
     family survival to avoid leakage. For valid/test pass target=None."""
     out = df.copy()
-    smoothing = get_family_smoothing(config)
+    smoothing = float(_feature_settings(config).get("family_smoothing", 10.0))
 
     out["Age"] = _impute_age(out, artifacts)
     out["Fare"] = (
@@ -113,6 +113,9 @@ def apply_preprocessing_artifacts(df, artifacts, config, target=None):
 
 
 def _family_survival(df, artifacts, target, smoothing):
+    """Smoothed survival rate of a passenger's ticket group. When `target` is
+    given (training fold), the passenger's own label is removed (leave-one-out)
+    so the feature does not leak the target into the model."""
     sums = df["Ticket"].map(artifacts["family_sum"]).fillna(0).astype(float)
     counts = df["Ticket"].map(artifacts["family_count"]).fillna(0).astype(float)
 
@@ -126,10 +129,13 @@ def _family_survival(df, artifacts, target, smoothing):
 
 
 def _feature_settings(config):
+    """Return the config's `features` section (empty dict if absent)."""
     return config.get("features", {})
 
 
 def _impute_age(df, artifacts):
+    """Fill missing Age from the most specific group median available —
+    Title+Sex+Pclass, then Sex+Pclass, then the global median."""
     age = df["Age"]
     age = _fillna_lookup(age, df, ["Title", "Sex", "Pclass"], artifacts["age_by_title_sex_pclass"])
     age = _fillna_lookup(age, df, ["Sex", "Pclass"], artifacts["age_by_sex_pclass"])
@@ -137,6 +143,7 @@ def _impute_age(df, artifacts):
 
 
 def _fillna_lookup(series, df, keys, lookup):
+    """Fill NaNs in `series` from `lookup`, keyed by the `keys` columns of df."""
     if lookup.empty:
         return series
     idx = pd.MultiIndex.from_frame(df[keys])
@@ -145,6 +152,8 @@ def _fillna_lookup(series, df, keys, lookup):
 
 
 def _passenger_type(df):
+    """Classify each passenger as woman / boy / adult_man — the "women and
+    children first" signal as a single feature."""
     out = pd.Series("adult_man", index=df.index, dtype=object)
     out[(df["Sex"] == "male") & ((df["Title"] == "Master") | (df["Age"] < 16))] = "boy"
     out[df["Sex"] == "female"] = "woman"
@@ -152,6 +161,7 @@ def _passenger_type(df):
 
 
 def _family_group(size):
+    """Bucket family size into Alone / Small / Medium / Large."""
     if size == 1:
         return "Alone"
     if size <= 4:
@@ -162,6 +172,7 @@ def _family_group(size):
 
 
 def _deck(cabin):
+    """Map a raw cabin string to a coarse deck bucket (ABC / DE / FG / Rare)."""
     if pd.isna(cabin):
         return "Unknown"
     letter = str(cabin).strip()[:1].upper()
@@ -175,12 +186,14 @@ def _deck(cabin):
 
 
 def _clean_ticket(ticket):
+    """Normalize a ticket string (upper-case, strip punctuation) for grouping."""
     if pd.isna(ticket):
         return "Unknown"
     return str(ticket).upper().replace(".", "").replace("/", "").strip()
 
 
 def _ticket_prefix(ticket):
+    """Extract the non-numeric prefix of a ticket, or "None" if there is none."""
     if pd.isna(ticket):
         return "None"
     parts = str(ticket).split()
@@ -190,5 +203,6 @@ def _ticket_prefix(ticket):
 
 
 def _mode_or_default(series, default):
+    """Most frequent value of a series, or `default` if it is empty."""
     mode = series.mode(dropna=True)
     return mode.iloc[0] if not mode.empty else default

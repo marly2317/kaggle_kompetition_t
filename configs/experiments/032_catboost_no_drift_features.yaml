@@ -1,0 +1,15 @@
+experiment:
+  name: 032_catboost_no_drift_features
+  parent: 001_best_solution
+  purpose: tuned catboost without high-cardinality features that drive train/test drift
+
+# Hypothesis: TicketFrequency, Surname and TicketPrefix are high-cardinality
+# features that inflate the train/test distribution shift (TicketFrequency is
+# the top-1 drifted feature in 001's adversarial report) while contributing
+# little to OOF accuracy. Dropping them should lower adversarial AUC; the open
+# question is whether Kaggle holds or drops with them gone.
+features:
+  drop:
+    - TicketFrequency
+    - Surname
+    - TicketPrefix

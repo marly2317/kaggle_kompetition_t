@@ -1,0 +1,22 @@
+experiment:
+  name: 035_mlp
+  purpose: pytorch MLP with entity embeddings - deep learning model for comparison
+
+validation:
+  strategy: kfold
+  n_splits: 5
+
+# Full feature set (same as 001 / 033) for an honest comparison against the
+# boostings. Categorical columns become learned embeddings, numeric columns are
+# standardized. Parameters are sensible defaults for ~700 train rows per fold,
+# not tuned — a deep learning model is rarely the winner on a dataset this small.
+model:
+  family: mlp
+  params:
+    hidden: [64, 32]
+    dropout: 0.35
+    epochs: 50
+    batch_size: 64
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    random_state: 42

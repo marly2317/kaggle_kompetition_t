@@ -2,11 +2,13 @@ import yaml
 
 
 def load_config(path):
+    """Load a single YAML file into a dict."""
     with path.open(encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
 def load_experiment_config(project_path, experiment_path):
+    """Merge an experiment config (path or already-loaded dict) onto the project config."""
     experiment_config = (
         experiment_path
         if isinstance(experiment_path, dict)
@@ -16,6 +18,7 @@ def load_experiment_config(project_path, experiment_path):
 
 
 def load_experiment_config_by_name(project_root, name):
+    """Load a fully-merged config for an experiment by its file-stem name."""
     experiment_config = _load_experiment_config_tree(project_root, name)
     return load_experiment_config(
         project_root / "configs" / "project.yaml",
@@ -24,6 +27,8 @@ def load_experiment_config_by_name(project_root, name):
 
 
 def _load_experiment_config_tree(project_root, name, seen=None):
+    """Resolve an experiment and its optional `parent` chain into one config.
+    Raises on a cyclic parent reference."""
     seen = seen or set()
     if name in seen:
         raise ValueError(f"cyclic experiment parent chain: {name}")
@@ -37,6 +42,8 @@ def _load_experiment_config_tree(project_root, name, seen=None):
 
 
 def _deep_merge(base, override):
+    """Recursively merge `override` onto `base`: nested dicts are merged,
+    scalars and lists are replaced."""
     out = base.copy()
     for key, value in override.items():
         if isinstance(value, dict) and isinstance(out.get(key), dict):

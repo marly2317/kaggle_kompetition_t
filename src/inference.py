@@ -9,6 +9,8 @@ from .utils import check_columns, ensure_dir, predict_by_threshold
 
 
 def create_submission(config, project_root):
+    """Build the submission CSV — average fold-model probabilities and apply the
+    saved decision threshold."""
     name = config["experiment"]["name"]
     _validate_features_match_fit_time(project_root, config, name)
 
@@ -31,6 +33,8 @@ def create_submission(config, project_root):
 
 
 def _validate_features_match_fit_time(project_root, config, name):
+    """Raise if the current feature config differs from the one used at fit
+    time — guards against scoring with a drifted config."""
     reports_dir = config.get("paths", {}).get("reports_dir")
     if not reports_dir:
         return
@@ -51,6 +55,7 @@ def _validate_features_match_fit_time(project_root, config, name):
 
 
 def _average_fold_proba(project_root, name, test, config):
+    """Average positive-class probabilities across all saved fold models."""
     model_dir = project_root / "models" / name
     fold_paths = sorted(
         p for p in model_dir.glob("fold_*.joblib")
@@ -72,6 +77,7 @@ def _average_fold_proba(project_root, name, test, config):
 
 
 def _load_threshold(model_dir):
+    """Load the tuned decision threshold, falling back to 0.5 if absent."""
     path = model_dir / "threshold.json"
     if not path.exists():
         return 0.5

@@ -1,9 +1,3 @@
----
-name: karpathy-guidelines
-description: Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria.
-license: MIT
----
-
 <!--
 Karpathy behavioral guidelines. Keep this section identical across:
   - CLAUDE.md
@@ -14,11 +8,9 @@ Source: https://github.com/multica-ai/andrej-karpathy-skills
 When updating principles, update all four files together. EXAMPLES.md has the worked examples.
 -->
 
-# Karpathy Guidelines
+# Repository instructions for GitHub Copilot
 
-Behavioral guidelines to reduce common LLM coding mistakes, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
-
-Source repo: https://github.com/multica-ai/andrej-karpathy-skills
+Behavioral guidelines to reduce common LLM coding mistakes. Based on [andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills). Merge with project-specific instructions below.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
@@ -77,3 +69,31 @@ For multi-step tasks, state a brief plan:
 ```
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+---
+
+## Project: Titanic ML pipeline
+
+Read `docs/notes.md` for experiment history and what **not** to reintroduce. For behavioral examples (what not to do), see `EXAMPLES.md`.
+
+### Architecture
+
+- **Configs:** `configs/project.yaml` + `configs/experiments/<name>.yaml` (optional `parent` chain via `src/config.py`).
+- **Train:** `python -m src.main fit` → CV in `src/train_functions.py`, artifacts in `models/<experiment>/`, reports in `reports/<experiment>/`.
+- **Submit:** `python -m src.main submit` → fold ensemble in `src/inference.py`.
+- **Features:** `src/features.py` — fold-level `fit_preprocessing_artifacts` / `apply_preprocessing_artifacts` only (no global fit on full train+valid).
+
+### Non-negotiables
+
+- Preprocessing and target-derived stats used **for training**: fit on train fold only, apply to valid/test. The `_run_shift_check` adversarial report fits on the full train deliberately — it is reporting only and does not enter the model.
+- Prefer stable OOF / fold std over single lucky split; check `docs/notes.md` before adding high-cardinality or train+test global stats.
+- New metrics go in `src/metrics.py`; wire through train reports if needed.
+- Do not add git `Co-authored-by` trailers or agent attribution to commits unless the user asks.
+
+### Verification
+
+- Smoke train path when touching pipeline: `python -m src.main fit --experiment 001_best_solution`
+
+---
+
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.

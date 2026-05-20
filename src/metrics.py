@@ -11,6 +11,7 @@ _METRICS = {
 
 
 def compute_all_metrics(y_true, y_pred, y_score):
+    """Compute accuracy, ROC AUC, recall, precision and F1 in one call."""
     return {
         "accuracy": float(accuracy_score(y_true, y_pred)),
         "roc_auc": float(roc_auc_score(y_true, y_score)),
@@ -21,6 +22,7 @@ def compute_all_metrics(y_true, y_pred, y_score):
 
 
 def get_metric(config, y_true, y_pred, y_score=None):
+    """Compute the single metric named in config["metric"]["name"]."""
     name = config["metric"]["name"]
     if name not in _METRICS:
         raise ValueError(f"unknown metric: {name} (available: {sorted(_METRICS)})")

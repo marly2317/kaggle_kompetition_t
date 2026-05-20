@@ -1,6 +1,6 @@
 ---
 description: Titanic Kaggle pipeline conventions for Python and configs
-globs: src/**/*.py,configs/**/*.yaml,tests/**/*.py
+globs: src/**/*.py,configs/**/*.yaml
 alwaysApply: false
 ---
 
@@ -26,4 +26,3 @@ alwaysApply: false
 
 - Keep functions in existing modules (`features`, `train_functions`, `metrics`).
 - Use `LOGGER` in CLI/train code, not bare `print`.
-- Run `python -m pytest tests/ -q` after pipeline changes.

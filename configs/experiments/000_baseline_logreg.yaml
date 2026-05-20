@@ -1,0 +1,32 @@
+experiment:
+  name: 000_baseline_logreg
+  purpose: logistic regression baseline on originally available raw features
+
+validation:
+  strategy: kfold
+  n_splits: 5
+
+model:
+  family: logreg
+  params:
+    max_iter: 1000
+    C: 1.0
+
+# Baseline uses only the columns present in the raw dataset.
+# Engineered features are dropped so this experiment is the reference
+# point that later feature work and stronger models are compared against.
+features:
+  drop:
+    - FamilySize
+    - IsAlone
+    - FamilySizeGroup
+    - Title
+    - Deck
+    - HasCabin
+    - TicketFrequency
+    - FarePerPerson
+    - PassengerType
+    - Surname
+    - TicketPrefix
+    - NaNCount
+    - FamilySurvivalRate

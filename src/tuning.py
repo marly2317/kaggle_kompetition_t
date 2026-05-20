@@ -15,6 +15,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def tune(project_root, experiment, n_trials=30, timeout=900):
+    """Run an Optuna search over the config search space and save the best params."""
     config = load_experiment_config_by_name(project_root, experiment)
     set_seed(config["project"]["seed"])
 
@@ -58,21 +59,30 @@ def tune(project_root, experiment, n_trials=30, timeout=900):
     return study
 
 
+def _suggest(trial, name, spec):
+    """Draw one hyperparameter from a config-defined search-space spec."""
+    t = spec["type"]
+    if t == "float":
+        return trial.suggest_float(name, spec["min"], spec["max"], log=spec.get("log", False))
+    if t == "int":
+        return trial.suggest_int(name, spec["min"], spec["max"])
+    if t == "categorical":
+        return trial.suggest_categorical(name, spec["choices"])
+    raise ValueError(f"unknown search_space type for {name}: {t}")
+
+
 def _objective(trial, train, target, seed, n_splits, config, categorical):
+    """One Optuna trial — return the mean CV score for its hyperparameters."""
     trial_settings = config["tuning"]["trial"]
-    model_params = {
-        "learning_rate": trial.suggest_float("learning_rate", 0.02, 0.1, log=True),
-        "depth": trial.suggest_int("depth", 3, 6),
-        "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 1.0, 10.0, log=True),
-        "random_strength": trial.suggest_float("random_strength", 0.0, 3.0),
-        "bagging_temperature": trial.suggest_float("bagging_temperature", 0.0, 1.0),
-        "border_count": trial.suggest_categorical("border_count", [32, 64, 128]),
+    search_space = config["tuning"]["search_space"]
+    model_params = {name: _suggest(trial, name, spec) for name, spec in search_space.items()}
+    model_params.update({
         "iterations": int(trial_settings["iterations"]),
         "loss_function": "Logloss",
         "random_seed": seed,
         "verbose": False,
         "allow_writing_files": False,
-    }
+    })
 
     skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
     scores = []

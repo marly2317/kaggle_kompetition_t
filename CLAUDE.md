@@ -1,3 +1,13 @@
+<!--
+Karpathy behavioral guidelines. Keep this section identical across:
+  - CLAUDE.md
+  - .cursor/rules/karpathy-guidelines.mdc
+  - .github/copilot-instructions.md
+  - skills/karpathy-guidelines/SKILL.md
+Source: https://github.com/multica-ai/andrej-karpathy-skills
+When updating principles, update all four files together. EXAMPLES.md has the worked examples.
+-->
+
 # CLAUDE.md
 
 Behavioral guidelines to reduce common LLM coding mistakes. Based on [andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills). Merge with project-specific instructions below.
@@ -64,7 +74,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Project: Titanic ML pipeline
 
-Read `AGENTS.md` for repo layout and commands. Read `docs/notes.md` for experiment history and what **not** to reintroduce. For behavioral examples (what not to do), see `docs/agent-guidelines/EXAMPLES.md`.
+Read `docs/notes.md` for experiment history and what **not** to reintroduce. For behavioral examples (what not to do), see `EXAMPLES.md`.
 
 ### Architecture
 
@@ -75,14 +85,13 @@ Read `AGENTS.md` for repo layout and commands. Read `docs/notes.md` for experime
 
 ### Non-negotiables
 
-- Preprocessing and target-derived stats: **fit on train fold only**, apply to valid/test.
+- Preprocessing and target-derived stats used **for training**: fit on train fold only, apply to valid/test. The `_run_shift_check` adversarial report fits on the full train deliberately — it is reporting only and does not enter the model.
 - Prefer stable OOF / fold std over single lucky split; check `docs/notes.md` before adding high-cardinality or train+test global stats.
 - New metrics go in `src/metrics.py`; wire through train reports if needed.
 - Do not add git `Co-authored-by` trailers or agent attribution to commits unless the user asks.
 
 ### Verification
 
-- After code changes: `python -m pytest tests/ -q`
 - Smoke train path when touching pipeline: `python -m src.main fit --experiment 001_best_solution`
 
 ---

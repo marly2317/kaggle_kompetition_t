@@ -1,10 +1,19 @@
-﻿## Текущее рабочее состояние
+﻿> **Agent guidelines:** Cursor / Claude Code / Copilot все читают одни и те же 4 принципа Карпати. Setup и переиспользование в новых проектах — см. [`CURSOR.md`](CURSOR.md). Примеры антипаттернов — [`EXAMPLES.md`](EXAMPLES.md).
 
-- активный эксперимент: `001_best_solution`
-- локально (5-fold): `0.83501 ± 0.00858`
-- OOF c подбором порога: `0.84287`
-- порог: `0.58`
-- Kaggle public: `0.82057`
+## Результаты
+
+Рабочее решение — `001_best_solution` (CatBoost). Все построенные модели на одной 5-fold кросс-валидации:
+
+| Эксперимент | Модель | CV accuracy | Kaggle public |
+|-------------|--------|-------------|---------------|
+| `000_baseline_logreg` | Логистическая регрессия — бейзлайн | 0.800 ± 0.017 | 0.782 |
+| `001_best_solution` | **CatBoost — рабочее решение** | 0.835 ± 0.009 | **0.821** |
+| `032_catboost_no_drift_features` | CatBoost без дрейфящих фич | 0.829 ± 0.006 | 0.775 |
+| `033_lightgbm` | LightGBM — нетюненный | 0.852 ± 0.018 | 0.778 |
+| `034_lightgbm_regularized` | LightGBM — регуляризованный | 0.845 ± 0.015 | 0.794 |
+| `035_mlp` | MLP (PyTorch, entity embeddings) | 0.815 ± 0.037 | 0.785 |
+
+Главный вывод: лучшая локальная метрика (`033`, CV `0.852`) даёт худший перенос на Kaggle. На этом датасете решают регуляризация и стабильность по фолдам, а не пик локальной accuracy — `001` выигрывает за счёт устойчивости (минимальный `std`, минимальный разрыв CV→Kaggle). Полный журнал экспериментов и разбор — `docs/notes.md`.
 
 ## Быстрый handover-check (5 минут)
 
@@ -13,7 +22,7 @@
 ```bash
 python -m venv .venv
 source .venv/Scripts/activate   
-pip install -e ".[dev]"
+pip install -e .
 ```
 
 2) Положить данные соревнования в `data/raw/`:
@@ -36,6 +45,8 @@ python -m src.main all
 - `src/main.py` — CLI entrypoint (`fit`, `submit`, `all`, `tune`)
 - `src/train_functions.py` — CV-обучение, OOF, подбор порога, сохранение артефактов
 - `src/features.py` — feature engineering и fold-level preprocessing artifacts
+- `src/model.py` — фабрика моделей по `model.family` (catboost / logreg / lightgbm / mlp)
+- `src/torch_mlp.py` — PyTorch MLP с entity embeddings (DL-модель)
 - `src/inference.py` — инференс по fold-моделям и сборка submission
 - `configs/project.yaml` — общие настройки проекта
 - `configs/experiments/*.yaml` — эксперименты

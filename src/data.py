@@ -4,6 +4,7 @@ from .utils import check_columns
 
 
 def load_raw_data(project_root, config):
+    """Load the train/test/sample CSVs and validate ids and the target column."""
     data_dir = project_root / config["paths"]["data_dir"]
     train = pd.read_csv(data_dir / config["paths"]["train_file"])
     test = pd.read_csv(data_dir / config["paths"]["test_file"])
@@ -23,6 +24,7 @@ def load_raw_data(project_root, config):
 
 
 def _check_unique_id(df, id_col, name):
+    """Raise if the id column has missing or duplicate values."""
     if df[id_col].isna().any():
         raise ValueError(f"{name}.{id_col} contains missing values")
     if not df[id_col].is_unique:
@@ -30,6 +32,7 @@ def _check_unique_id(df, id_col, name):
 
 
 def _check_binary_target(target, name):
+    """Raise if the target has missing values or values outside {0, 1}."""
     if target.isna().any():
         raise ValueError(f"{name} target contains missing values")
     values = set(target.unique())

@@ -9,6 +9,9 @@ from sklearn.preprocessing import OrdinalEncoder, StandardScaler
 
 
 def check_distribution_shift(train_features, test_features, categorical, seed=42):
+    """Adversarial validation — train a classifier to tell train rows from test
+    rows. AUC near 0.5 means no shift; higher means the splits differ. Returns a
+    report with mean AUC, per-fold AUCs, a verdict and the top drifted features."""
     train_marked = train_features.assign(_is_test=0)
     test_marked = test_features.assign(_is_test=1)
     combined = pd.concat([train_marked, test_marked], ignore_index=True)
@@ -38,6 +41,7 @@ def check_distribution_shift(train_features, test_features, categorical, seed=42
 
 
 def _verdict(auc):
+    """Translate an adversarial AUC into an ok / moderate / strong-shift label."""
     if auc < 0.55:
         return "ok"
     if auc < 0.7:

@@ -12,28 +12,33 @@ import pandas as pd
 
 
 def set_seed(seed):
+    """Seed Python, NumPy and PYTHONHASHSEED for reproducible runs."""
     random.seed(seed)
     np.random.seed(seed)
     os.environ["PYTHONHASHSEED"] = str(seed)
 
 
 def check_columns(df, required, name):
+    """Raise if `df` is missing any of the required columns."""
     missing = sorted(set(required) - set(df.columns))
     if missing:
         raise ValueError(f"missing columns in {name}: {missing}")
 
 
 def ensure_dir(path):
+    """Create a directory (with parents) if it does not exist."""
     path.mkdir(parents=True, exist_ok=True)
 
 
 def save_json(data, path):
+    """Write `data` to a JSON file, creating parent dirs and handling numpy types."""
     ensure_dir(path.parent)
     with path.open("w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2, default=_to_jsonable)
 
 
 def setup_logging(level=logging.INFO):
+    """Configure root logging format and level for the CLI."""
     logging.basicConfig(
         level=level,
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -41,6 +46,7 @@ def setup_logging(level=logging.INFO):
 
 
 def collect_run_metadata(config):
+    """Capture run provenance — timestamp, Python/platform, seed, dependency versions."""
     dependencies = {}
     for package in ("pandas", "numpy", "scikit-learn", "catboost", "optuna"):
         try:
@@ -59,10 +65,12 @@ def collect_run_metadata(config):
 
 
 def predict_by_threshold(probabilities, threshold):
+    """Convert probabilities to 0/1 predictions at the given threshold."""
     return (np.asarray(probabilities) >= threshold).astype(int)
 
 
 def _to_jsonable(value):
+    """json.dump default hook — convert numpy scalars and arrays to native types."""
     if isinstance(value, np.integer):
         return int(value)
     if isinstance(value, np.floating):
