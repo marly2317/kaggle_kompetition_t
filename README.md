@@ -1,4 +1,4 @@
-﻿> **Agent guidelines:** Cursor / Claude Code / Copilot все читают одни и те же 4 принципа Карпати. Setup и переиспользование в новых проектах — см. [`CURSOR.md`](CURSOR.md). Примеры антипаттернов — [`EXAMPLES.md`](EXAMPLES.md).
+
 
 ## Результаты
 
