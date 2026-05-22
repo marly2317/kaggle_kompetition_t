@@ -22,3 +22,13 @@ data/external/*
 !data/external/.gitkeep
 
 .ipynb_checkpoints/
+
+# Local agent / editor tooling — keep on disk, never commit
+/CLAUDE.md
+/CURSOR.md
+/AGENTS.md
+/EXAMPLES.md
+/.cursor/
+/.claude-plugin/
+/.github/copilot-instructions.md
+/skills/
