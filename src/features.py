@@ -129,7 +129,6 @@ def _family_survival(df, artifacts, target, smoothing):
 
 
 def _feature_settings(config):
-    """Return the config's `features` section (empty dict if absent)."""
     return config.get("features", {})
 
 

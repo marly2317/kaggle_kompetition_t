@@ -2,7 +2,6 @@ import yaml
 
 
 def load_config(path):
-    """Load a single YAML file into a dict."""
     with path.open(encoding="utf-8") as f:
         return yaml.safe_load(f)
 

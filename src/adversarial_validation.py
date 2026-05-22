@@ -1,5 +1,4 @@
-"""Detect distribution shift between train and test
-"""
+"""Detect distribution shift between train and test (adversarial validation)."""
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression

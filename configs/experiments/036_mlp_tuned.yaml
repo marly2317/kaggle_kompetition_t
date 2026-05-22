@@ -1,0 +1,19 @@
+experiment:
+  name: 036_mlp_tuned
+  parent: 035_mlp
+  purpose: pytorch MLP with hyperparameters from a 30-trial Optuna search (best trial CV 0.83837)
+
+# Optuna picked a larger network (128-64) held back by stronger regularization
+# (dropout 0.38) — high capacity, tightly regularized. CV looks strong; the
+# Kaggle score is what decides whether the tuning actually transferred.
+model:
+  family: mlp
+  params:
+    hidden: [128, 64]
+    dropout: 0.3767
+    epochs: 71
+    batch_size: 128
+    learning_rate: 0.003778
+    weight_decay: 0.000344
+    optimizer: adam
+    random_state: 42

@@ -24,7 +24,7 @@ def _embedding_dim(n_categories):
 
 class _TabularMLP(torch.nn.Module):
     """The network itself — one embedding per categorical column, concatenated
-    with the numeric columns, then a stack of Linear/ReLU/Dropout layers."""
+    with the numeric columns, then a stact of Linear/ReLU/Dropout layers."""
 
     def __init__(self, embedding_sizes, n_numeric, hidden, dropout):
         super().__init__()

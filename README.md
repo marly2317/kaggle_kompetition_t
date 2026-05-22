@@ -6,12 +6,14 @@
 
 | Эксперимент | Модель | CV accuracy | Kaggle public |
 |-------------|--------|-------------|---------------|
-| `000_baseline_logreg` | Логистическая регрессия — бейзлайн | 0.800 ± 0.017 | 0.782 |
+| `000_baseline_logreg` | Логистическая регрессия — бейзлайн | 0.798 ± 0.014 | 0.778 |
 | `001_best_solution` | **CatBoost — рабочее решение** | 0.835 ± 0.009 | **0.821** |
 | `032_catboost_no_drift_features` | CatBoost без дрейфящих фич | 0.829 ± 0.006 | 0.775 |
 | `033_lightgbm` | LightGBM — нетюненный | 0.852 ± 0.018 | 0.778 |
 | `034_lightgbm_regularized` | LightGBM — регуляризованный | 0.845 ± 0.015 | 0.794 |
 | `035_mlp` | MLP (PyTorch, entity embeddings) | 0.815 ± 0.037 | 0.785 |
+| `036_mlp_tuned` | MLP — гиперпараметры подобраны Optuna | 0.836 ± 0.016 | 0.797 |
+| `037_mlp_tuned_adamw` | MLP — AdamW, перетюнен Optuna | 0.829 ± 0.013 | 0.778 |
 
 Главный вывод: лучшая локальная метрика (`033`, CV `0.852`) даёт худший перенос на Kaggle. На этом датасете решают регуляризация и стабильность по фолдам, а не пик локальной accuracy — `001` выигрывает за счёт устойчивости (минимальный `std`, минимальный разрыв CV→Kaggle). Полный журнал экспериментов и разбор — `docs/notes.md`.
 
@@ -21,7 +23,8 @@
 
 ```bash
 python -m venv .venv
-source .venv/Scripts/activate   
+.\.venv\Scripts\Activate.ps1      # PowerShell (Windows)
+# source .venv/Scripts/activate   # bash / Git Bash
 pip install -e .
 ```
 

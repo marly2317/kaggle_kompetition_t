@@ -73,16 +73,16 @@ def _suggest(trial, name, spec):
 
 def _objective(trial, train, target, seed, n_splits, config, categorical):
     """One Optuna trial — return the mean CV score for its hyperparameters."""
-    trial_settings = config["tuning"]["trial"]
-    search_space = config["tuning"]["search_space"]
+    family = config["model"]["family"]
+    search_space = config["tuning"]["search_space"][family]
     model_params = {name: _suggest(trial, name, spec) for name, spec in search_space.items()}
-    model_params.update({
-        "iterations": int(trial_settings["iterations"]),
-        "loss_function": "Logloss",
-        "random_seed": seed,
-        "verbose": False,
-        "allow_writing_files": False,
-    })
+    model_params.update(_fixed_params(family, config, seed))
+    if family == "mlp" and "hidden" in model_params:
+        # Optuna can't suggest a variable-length list, so the architecture is
+        # searched as a string ("128-64") and parsed back into layer widths.
+        model_params["hidden"] = [int(width) for width in model_params["hidden"].split("-")]
+
+    fit_override = _fit_override(family, config)
 
     skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
     scores = []
@@ -100,10 +100,29 @@ def _objective(trial, train, target, seed, n_splits, config, categorical):
             y_valid,
             categorical,
             model_params_override=model_params,
-            fit_params_override={
-                "early_stopping_rounds": int(trial_settings["early_stopping_rounds"]),
-            },
+            fit_params_override=fit_override,
         )
         scores.append(score)
 
     return float(np.mean(scores))
+
+
+def _fixed_params(family, config, seed):
+    """Parameters attached to every trial that are not part of the search."""
+    if family == "catboost":
+        trial_settings = config["tuning"]["trial"]
+        return {
+            "iterations": int(trial_settings["iterations"]),
+            "loss_function": "Logloss",
+            "random_seed": seed,
+            "verbose": False,
+            "allow_writing_files": False,
+        }
+    return {}
+
+
+def _fit_override(family, config):
+    """fit()-time overrides — CatBoost uses early stopping, others fit plainly."""
+    if family == "catboost":
+        return {"early_stopping_rounds": int(config["tuning"]["trial"]["early_stopping_rounds"])}
+    return None

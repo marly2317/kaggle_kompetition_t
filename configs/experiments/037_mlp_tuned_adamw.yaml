@@ -1,0 +1,20 @@
+experiment:
+  name: 037_mlp_tuned_adamw
+  parent: 035_mlp
+  purpose: pytorch MLP (AdamW optimizer) with hyperparameters from a fresh Optuna search
+
+# Re-tuned after switching the optimizer Adam -> AdamW (decoupled weight decay).
+# Optuna landed on a deeper net (128-64-32) and a much smaller learning rate
+# (2e-4) than the Adam-tuned 036 — AdamW regularizes differently, so the search
+# found its optimum elsewhere.
+model:
+  family: mlp
+  params:
+    hidden: [128, 64, 32]
+    dropout: 0.3416
+    epochs: 52
+    batch_size: 128
+    learning_rate: 0.000204
+    weight_decay: 0.000209
+    optimizer: adamw
+    random_state: 42

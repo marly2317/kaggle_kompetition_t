@@ -26,7 +26,6 @@ def check_columns(df, required, name):
 
 
 def ensure_dir(path):
-    """Create a directory (with parents) if it does not exist."""
     path.mkdir(parents=True, exist_ok=True)
 
 
@@ -38,7 +37,6 @@ def save_json(data, path):
 
 
 def setup_logging(level=logging.INFO):
-    """Configure root logging format and level for the CLI."""
     logging.basicConfig(
         level=level,
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -65,7 +63,6 @@ def collect_run_metadata(config):
 
 
 def predict_by_threshold(probabilities, threshold):
-    """Convert probabilities to 0/1 predictions at the given threshold."""
     return (np.asarray(probabilities) >= threshold).astype(int)
 
 

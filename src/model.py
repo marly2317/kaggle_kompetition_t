@@ -6,7 +6,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer, make_column_selector
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
 
 def get_model(config, params_override=None):
@@ -29,12 +29,23 @@ def get_model(config, params_override=None):
     raise ValueError(f"unsupported model family: {family}")
 
 
+def _numeric_except_fare(df):
+    """Numeric columns except Fare — Fare gets its own log1p branch."""
+    return [c for c in df.select_dtypes(include=np.number).columns if c != "Fare"]
+
+
 def _build_logreg(params):
-    """Logistic regression baseline. Numeric columns are standardized and
-    object (categorical) columns are one-hot encoded; both transformers are
-    fit per CV fold inside the pipeline, so no leakage across folds."""
+    """Logistic regression baseline. Fare is log1p-transformed before scaling —
+    it is strongly right-skewed and the model is linear; the other numeric
+    columns are standardized and object columns one-hot encoded. Every
+    transformer is fit per CV fold inside the pipeline, so no leakage."""
+    log_scaled_fare = Pipeline([
+        ("log1p", FunctionTransformer(np.log1p)),
+        ("scale", StandardScaler()),
+    ])
     preprocess = ColumnTransformer([
-        ("num", StandardScaler(), make_column_selector(dtype_include=np.number)),
+        ("fare", log_scaled_fare, ["Fare"]),
+        ("num", StandardScaler(), _numeric_except_fare),
         ("cat", OneHotEncoder(handle_unknown="ignore"), make_column_selector(dtype_include=object)),
     ])
     return Pipeline([
